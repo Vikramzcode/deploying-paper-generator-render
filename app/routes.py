@@ -560,7 +560,6 @@ Begin generating the question paper now:
                 margin-bottom: 18px;
                 border-bottom: 2px solid #222;
                 padding-bottom: 8px;
-                page-break-after: avoid;
             }
             .paper-header h1 { font-size: 22pt; margin: 0; }
             .paper-header h2 { font-size: 16pt; margin: 4px 0; font-weight: normal; }
@@ -573,7 +572,6 @@ Begin generating the question paper now:
             }
             section {
                 margin-bottom: 22px;
-                page-break-inside: avoid;
             }
             h4.section-title {
                 font-size: 13pt;
@@ -652,6 +650,7 @@ Begin generating the question paper now:
     </html>
     """
 # ...existing code...
+
 
     
     def to_char_filter(n):
