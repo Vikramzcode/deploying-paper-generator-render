@@ -38,6 +38,108 @@
       --med:#60a5fa;
       --hard:#f87171;
     }
+    .final-preview-box {
+  background: var(--bs-body-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  transition: all 0.25s ease-in-out;
+}
+
+.preview-content .preview-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed rgba(0,0,0,0.08);
+}
+
+.preview-content .preview-item:last-child {
+  border-bottom: none;
+}
+
+.preview-section-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: var(--bs-primary);
+}
+
+.preview-divider {
+  margin: 10px 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+#finalPreviewContent .fs-5 {
+  font-size: 1.35rem !important;
+}
+
+#finalPreviewContent .fs-6 {
+  font-size: 1.05rem !important;
+  opacity: 0.85;
+}
+/* Main Box */
+.final-preview-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease;
+  background: var(--bs-body-bg);
+}
+
+.final-preview-box:hover {
+  box-shadow: 0 6px 22px rgba(0,0,0,0.09);
+}
+
+/* Header Styling */
+.final-preview-header {
+  background: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary-text);
+  padding: 12px 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 1.05rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Preview Item Rows */
+.preview-content .preview-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed rgba(0,0,0,0.08);
+}
+
+.preview-content .preview-item:last-child {
+  border-bottom: none;
+}
+
+/* Divider */
+.preview-divider {
+  margin: 10px 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Title Blow-up (Exam & School) */
+.preview-content .preview-title {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.preview-content .preview-title .exam-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.preview-content .preview-title .school-name {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+
 
     html,body{ height:100%; background:var(--bg); color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
 
@@ -251,10 +353,20 @@
         </div>
     </div>
 
-    <div class="border rounded p-3 my-4" id="finalPreviewBox">
-        <h5 data-lang-key="finalPreview">Final Preview</h5>
-        <div id="finalPreviewContent" class="text-muted small mt-2"></div>
+<div id="finalPreviewBox" class="final-preview-box my-4">
+  <div class="final-preview-header justify-content-between">
+    <div> <i class="bi bi-clipboard-check me-2"></i>
+      <span data-lang-key="FinalPreview">Final Preview</span>
     </div>
+    <button type="button" id="saveAsTemplateBtn" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-save me-1"></i> <span data-lang-key="saveAsTemplate">Save as Template</span>
+    </button>
+  </div>
+  <div id="finalPreviewContent" class="preview-content p-3"></div>
+</div>
+
+
+
     
     <div class="d-flex justify-content-between mt-4">
         <button type="button" class="btn btn-outline-secondary prev-btn"><i class="bi bi-arrow-left me-1"></i><span data-lang-key="previous">Previous</span></button>
@@ -307,34 +419,76 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      
         // --- STATE ---
         let currentStep = 0;
         let generationMode = 'class';
 
         // --- DATA ---
         const subjects = {
-            CBSE: {
-                1: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'EVS',hi:'ईवीएस'}],
-                2: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'EVS',hi:'ईवीएस'}],
-                3: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'}],
-                4: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'}],
-                5: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'}],
-                6: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'},{en:'Social Science',hi:'सामाजिक विज्ञान'}],
-                7: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'},{en:'Social Science',hi:' सामाजिक विज्ञान'}],
-                8: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'},{en:'Social Science',hi:'सामाजिक विज्ञान'}],
-                9: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'},{en:'Social Science',hi:'सामाजिक विज्ञान'},{en:'Computer Science',hi:'कंप्यूटर विज्ञान'}],
-                10: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'},{en:'Social Science',hi:'सामाजिक विज्ञान'},{en:'Computer Science',hi:'कंप्यूटर विज्ञान'}],
-                11: [{en:'English',hi:'अंग्रेजी'},{en:'Physics',hi:'भौतिक विज्ञान'},{en:'Chemistry',hi:'रसायन विज्ञान'},{en:'Mathematics',hi:'गणित'},{en:'Biology',hi:'जीव विज्ञान'},{en:'Economics',hi:'अर्थशास्त्र'},{en:'Accountancy',hi:'लेखाकर्म'},{en:'Computer Science',hi:'कंप्यूटर विज्ञान'}],
-                12: [{en:'English',hi:'अंग्रेजी'},{en:'Physics',hi:'भौतिक विज्ञान'},{en:'Chemistry',hi:'रसायन विज्ञान'},{en:'Mathematics',hi:'गणित'},{en:'Biology',hi:'जीव विज्ञान'},{en:'Economics',hi:'अर्थशास्त्र'},{en:'Accountancy',hi:'लेखाकर्म'},{en:'Computer Science',hi:'कंप्यूटर विज्ञान'}]
-            },
-            ICSE: { // Using full chapter data now
-                 9: [{en:'Mathematics',hi:'गणित'},{en:'English',hi:'अंग्रेजी'},{en:'Physics',hi:'भौतिक विज्ञान'},{en:'Chemistry',hi:'रसायन विज्ञान'}],
-                10: [{en:'Mathematics',hi:'गणित'},{en:'English',hi:'अंग्रेजी'},{en:'Physics',hi:'भौतिक विज्ञान'},{en:'Chemistry',hi:'रसायन विज्ञान'}]
-            },
-            "State Board": { // Using full chapter data now
-                 9: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'}],
-                10: [{en:'English',hi:'अंग्रेजी'},{en:'Hindi',hi:'हिन्दी'},{en:'Mathematics',hi:'गणित'},{en:'Science',hi:'विज्ञान'}]
-            }
+           CBSE: {
+    1: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    2: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    3: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    4: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    5: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    6: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    7: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    8: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    9: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    10: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    11: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },
+    { en: "Mathematics", hi: "गणित" },{ en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    12: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },
+    { en: "Mathematics", hi: "गणित" },{ en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+  },
+  ICSE: {
+    1: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    2: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    3: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    4: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    5: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    6: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    7: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    8: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    9: [{ en: "Mathematics", hi: "गणित" },{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },{ en: "Biology", hi: "जीव विज्ञान" },{ en: "History & Civics", hi: "इतिहास और नागरिक शास्त्र" },
+      { en: "Geography", hi: "भूगोल" },{ en: "Computer", hi: "कंप्यूटर" },{ en: "English Grammar", hi: "अंग्रेजी व्याकरण" }],
+    10: [{ en: "Mathematics", hi: "गणित" },{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },{ en: "Biology", hi: "जीव विज्ञान" },
+      { en: "History & Civics", hi: "इतिहास और नागरिक शास्त्र" },{ en: "Geography", hi: "भूगोल" },{ en: "Computer", hi: "कंप्यूटर" },{ en: "English Grammar", hi: "अंग्रेजी व्याकरण" }],
+    11: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },{ en: "Mathematics", hi: "गणित" },
+      { en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    12: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },{ en: "Mathematics", hi: "गणित" },
+      { en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }]
+  },
+  "State Board": {
+    1: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    2: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "EVS", hi: "ईवीएस" }],
+    3: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    4: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    5: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" }],
+    6: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    7: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    8: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" }],
+    9: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    10: [{ en: "English", hi: "अंग्रेजी" },{ en: "Hindi", hi: "हिन्दी" },{ en: "Mathematics", hi: "गणित" },{ en: "Science", hi: "विज्ञान" },
+    { en: "Social Science", hi: "सामाजिक विज्ञान" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    11: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },
+    { en: "Mathematics", hi: "गणित" },{ en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+    12: [{ en: "English", hi: "अंग्रेजी" },{ en: "Physics", hi: "भौतिक विज्ञान" },{ en: "Chemistry", hi: "रसायन विज्ञान" },
+    { en: "Mathematics", hi: "गणित" },{ en: "Biology", hi: "जीव विज्ञान" },{ en: "Economics", hi: "अर्थशास्त्र" },{ en: "Accountancy", hi: "लेखाकर्म" },{ en: "Computer Science", hi: "कंप्यूटर विज्ञान" }],
+  }
         };
         const chaptersData = {
   ICSE: {
@@ -854,7 +1008,7 @@ chaptersData["State Board"] = JSON.parse(JSON.stringify(chaptersData["CBSE"]));
             { id: 'Short', labelKey: 'shortAnswer', defaultMarks: 3 }, { id: 'Long', labelKey: 'longAnswer', defaultMarks: 5 },
             { id: 'Match', labelKey: 'matching', defaultMarks: 4 }, { id: 'Case', labelKey: 'caseStudy', defaultMarks: 5 }
         ];
-        const langData = { en: {title: "Intelligent Paper Generator", subtitle: "Build assessments quickly.", savedTemplates: "Saved Templates", generatedPapers: "Generated Papers", step1Title: "Step 1: Core Details", generationMode: "Generation Mode", byTopic: "By Topic", byClassAndChapters: "By Class & Chapters", schoolBoard: "School Board", selectBoard: "Select Board...", class: "Class", selectClass: "Select Class...", subject: "Subject", selectSubject: "Select Subject...", chapters: "Chapters", selectAll: "Select All", deselectAll: "Deselect All", selectClassSubjectPrompt: "Please select a board, class and subject.", next: "Next", previous: "Previous", step2Title: "Step 2: Questions & Difficulty", mcq: "Multiple Choice", fillInBlanks: "Fill in the Blanks", shortAnswer: "Short Answer", longAnswer: "Long Answer", matching: "Matching", caseStudy: "Case Study", marks: "Marks", difficultyDistribution: "Difficulty Distribution", totalMarks: "Total Marks", step3Title: "Step 3: Final Details & Generate", examName: "Examination Name", schoolName: "School Name", generatePaper: "Generate Paper", easy: "Easy", medium: "Medium", hard: "Hard", templatesStoredLocally: "Templates stored locally", papersStoredLocally: "Your past generated papers", clearAll: "Clear All", backToGenerator: "Back to Generator"}, hi: { title: "इंटेलिजेंट पेपर जेनरेटर", subtitle: "आसानी से मूल्यांकन बनाएं।", savedTemplates: "सहेजे गए टेम्पलेट्स", generatedPapers: "जेनरेट किए गए पेपर", step1Title: "चरण 1: मुख्य विवरण", generationMode: "जनरेशन मोड", byTopic: "विषय के अनुसार", byClassAndChapters: "कक्षा और अध्याय के अनुसार", schoolBoard: "स्कूल बोर्ड", selectBoard: "बोर्ड चुनें...", class: "कक्षा", selectClass: "कक्षा चुनें...", subject: "विषय", selectSubject: "विषय चुनें...", chapters: "अध्याय", selectAll: "सभी चुनें", deselectAll: "सभी अचयनित करें", selectClassSubjectPrompt: "कृपया बोर्ड, कक्षा और विषय चुनें।", next: "अगला", previous: "पिछला", step2Title: "चरण 2: प्रश्न और कठिनाई", mcq: "बहुविकल्पीय", fillInBlanks: "रिक्त स्थान भरें", shortAnswer: "लघु उत्तरीय", longAnswer: "दीर्घ उत्तरीय", matching: "मिलान", caseStudy: "केस स्टडी", marks: "अंक", difficultyDistribution: "कठिनाई वितरण", totalMarks: "कुल अंक", step3Title: "चरण 3: अंतिम विवरण और जेनरेट", examName: "परीक्षा का नाम", schoolName: "स्कूल का नाम", generatePaper: "पेपर जेनरेट करें", easy: "आसान", medium: "मध्यम", hard: "कठिन", templatesStoredLocally: "टेम्पलेट्स स्थानीय रूप से संग्रहीत", papersStoredLocally: "आपके पिछले उत्पन्न पेपर", clearAll: "सभी साफ़ करें", backToGenerator: "जेनरेटर पर वापस जाएं" }};
+        const langData = { en: {title: "Intelligent Paper Generator", subtitle: "Build assessments quickly.", savedTemplates: "Saved Templates", generatedPapers: "Generated Papers", step1Title: "Step 1: Core Details", generationMode: "Generation Mode", byTopic: "By Topic", byClassAndChapters: "By Class & Chapters", schoolBoard: "School Board", selectBoard: "Select Board...", class: "Class", selectClass: "Select Class...", subject: "Subject", selectSubject: "Select Subject...", chapters: "Chapters", selectAll: "Select All", deselectAll: "Deselect All", selectClassSubjectPrompt: "Please select a board, class and subject.", next: "Next", previous: "Previous", step2Title: "Step 2: Questions & Difficulty", mcq: "Multiple Choice", fillInBlanks: "Fill in the Blanks", shortAnswer: "Short Answer", longAnswer: "Long Answer", matching: "Matching", caseStudy: "Case Study", marks: "Marks", difficultyDistribution: "Difficulty Distribution", totalMarks: "Total Marks", step3Title: "Step 3: Final Details & Generate", examName: "Examination Name", schoolName: "School Name", generatePaper: "Generate Paper", easy: "Easy", medium: "Medium", hard: "Hard", templatesStoredLocally: "Templates stored locally", papersStoredLocally: "Your past generated papers", clearAll: "Clear All", backToGenerator: "Back to Generator", saveAsTemplate: "Save as Template"}, hi: { title: "इंटेलिजेंट पेपर जेनरेटर", subtitle: "आसानी से मूल्यांकन बनाएं।", savedTemplates: "सहेजे गए टेम्पलेट्स", generatedPapers: "जेनरेट किए गए पेपर", step1Title: "चरण 1: मुख्य विवरण", generationMode: "जनरेशन मोड", byTopic: "विषय के अनुसार", byClassAndChapters: "कक्षा और अध्याय के अनुसार", schoolBoard: "स्कूल बोर्ड", selectBoard: "बोर्ड चुनें...", class: "कक्षा", selectClass: "कक्षा चुनें...", subject: "विषय", selectSubject: "विषय चुनें...", chapters: "अध्याय", selectAll: "सभी चुनें", deselectAll: "सभी अचयनित करें", selectClassSubjectPrompt: "कृपया बोर्ड, कक्षा और विषय चुनें।", next: "अगला", previous: "पिछला", step2Title: "चरण 2: प्रश्न और कठिनाई", mcq: "बहुविकल्पीय", fillInBlanks: "रिक्त स्थान भरें", shortAnswer: "लघु उत्तरीय", longAnswer: "दीर्घ उत्तरीय", matching: "मिलान", caseStudy: "केस स्टडी", marks: "अंक", difficultyDistribution: "कठिनाई वितरण", totalMarks: "कुल अंक", step3Title: "चरण 3: अंतिम विवरण और जेनरेट", examName: "परीक्षा का नाम", schoolName: "स्कूल का नाम", generatePaper: "पेपर जेनरेट करें", easy: "आसान", medium: "मध्यम", hard: "कठिन", templatesStoredLocally: "टेम्पलेट्स स्थानीय रूप से संग्रहीत", papersStoredLocally: "आपके पिछले उत्पन्न पेपर", clearAll: "सभी साफ़ करें", backToGenerator: "जेनरेटर पर वापस जाएं", saveAsTemplate: "टेम्पलेट के रूप में सहेजें" }};
 
         // --- DOM ELEMENTS ---
         const formContainer = document.getElementById('formContainer');
@@ -876,6 +1030,7 @@ chaptersData["State Board"] = JSON.parse(JSON.stringify(chaptersData["CBSE"]));
         const liveGeneratedPaperContainer = document.getElementById('liveGeneratedPaperContainer');
         const generatedPapersGrid = document.getElementById('generatedPapersGrid');
         const clearAllPapersBtn = document.getElementById('clearAllPapers');
+        const saveAsTemplateBtn = document.getElementById('saveAsTemplateBtn');
 
         // --- UI TOGGLING & NAVIGATION ---
         const showGeneratorView = () => {
@@ -1038,30 +1193,39 @@ chaptersData["State Board"] = JSON.parse(JSON.stringify(chaptersData["CBSE"]));
 
 
         function updateFinalPreview() {
-            const payload = buildPayload(); // Uses the existing function to get data
-            const contentEl = document.getElementById('finalPreviewContent');
-            if (!contentEl) return;
+    const payload = buildPayload();
+    const contentEl = document.getElementById('finalPreviewContent');
+    if (!contentEl) return;
 
-            let totalQ = 0;
-            Object.values(payload.questionDistribution).forEach(dist => {
-                totalQ += dist.count;
-            });
+    let totalQ = 0;
+    let totalM = 0;
+    Object.values(payload.questionDistribution).forEach(dist => {
+        totalQ += dist.count;
+        totalM += dist.count * dist.marks;
+    });
 
-            let totalM = 0;
-            Object.values(payload.questionDistribution).forEach(dist => {
-                totalM += dist.count * dist.marks;
-            });
+    let html = `
+      <div class="preview-title">
+        <div class="exam-name">${payload.examName || ''}</div>
+        <div class="school-name">${payload.schoolName || ''}</div>
+      </div>
+      <div class="preview-divider"></div>
+      <div class="preview-section">
+        <div class="preview-item"><span><strong>${getLangText('schoolBoard')}</strong></span><span>${payload.schoolBoard || 'Not set'}</span></div>
+        <div class="preview-item"><span><strong>${getLangText('class')}</strong></span><span>${payload.class || 'Not set'}</span></div>
+        <div class="preview-item"><span><strong>${getLangText('subject')}</strong></span><span>${payload.subject || 'Not set'}</span></div>
+      </div>
+      <div class="preview-divider"></div>
+      <div class="preview-section">
+        <div class="preview-item"><span><strong>Total Questions</strong></span><span>${totalQ}</span></div>
+        <div class="preview-item"><span><strong>${getLangText('totalMarks')}</strong></span><span>${totalM}</span></></div>
+      </div>
+    `;
 
-            let html = '<ul class="list-unstyled">';
-            html += `<li><strong>${getLangText('schoolBoard')}:</strong> ${payload.schoolBoard || 'Not set'}</li>`;
-            html += `<li><strong>${getLangText('class')}:</strong> ${payload.class || 'Not set'}</li>`;
-            html += `<li><strong>${getLangText('subject')}:</strong> ${payload.subject || 'Not set'}</li>`;
-            html += `<hr class="my-2">`;
-            html += `<li><strong>Total Questions:</strong> ${totalQ}</li>`;
-            html += `<li><strong>${getLangText('totalMarks')}:</strong> ${totalM}</li>`;
-            html += `</ul>`;
-            contentEl.innerHTML = html;
-        }
+    contentEl.innerHTML = html;
+}
+
+
 
         // --- DIFFICULTY SLIDER LOGIC ---
         let activeHandle = null;
@@ -1345,6 +1509,9 @@ function openSavedPaper(index) {
         schoolBoard.addEventListener('change', populateSubjects);
         classSelect.addEventListener('change', populateSubjects);
         subjectSelect.addEventListener('change', populateChapters);
+        examName.addEventListener('input', updateFinalPreview);
+schoolName.addEventListener('input', updateFinalPreview);
+
         selectAllChaptersBtn.addEventListener('click', () => chaptersContainer.querySelectorAll('.chapter-checkbox').forEach(cb => cb.checked = true));
         deselectAllChaptersBtn.addEventListener('click', () => chaptersContainer.querySelectorAll('.chapter-checkbox').forEach(cb => cb.checked = false));
         
@@ -1371,6 +1538,11 @@ function openSavedPaper(index) {
             if (!confirm('Clear all generated papers?')) return;
             localStorage.removeItem('qp_papers');
             renderGeneratedPapers();
+        });
+
+        saveAsTemplateBtn.addEventListener('click', () => {
+            saveTemplate();
+            alert('Template saved successfully!'); // Optional: provide user feedback
         });
 
 generatePaperBtn.addEventListener('click', async () => {
